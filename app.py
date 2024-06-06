@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -71,6 +71,7 @@ def login():
 
         if username in users and users[username] == password:
             session['username'] = username
+            flash(f"Вітаю {username}! Ви успішно авторизувались!")
 
             return redirect(url_for('user', username=username))
 
@@ -79,7 +80,9 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
+    username = session.pop('username', None)
+    if username:
+        flash(f"Вітаю {username} Ви успішно покинули нас :( ")
 
     return redirect(url_for('home'))
 

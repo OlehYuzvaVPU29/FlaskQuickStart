@@ -24,6 +24,9 @@
             <li>
                 <a href="{{ url_for('logout') }}">Деавторизуватися</a>
             </li>
+            <li>
+                <a href="{{ url_for('user', username=session.username) }}"><big>Мій Профіль</big></a>
+            </li>
             {% else %}
             <li>
                 <a href="{{ url_for('login') }}">Авторизація</a>
@@ -33,10 +36,22 @@
             </li>
             {% endif %}
             <li>
-                <a href="{{ url_for('about') }}">About</a>
+                <a href="{{ url_for('about') }}"><small>Про Нас</small></a>
             </li>
         </ul>
     </header>
+
+    <div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class=flashes>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
 <div>
     {% block content %}{% endblock %}
 </div>

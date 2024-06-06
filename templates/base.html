@@ -14,13 +14,29 @@
     </style>
 </head>
 <body>
-<nav>
-    <ul>
-        <li><a href="{{ url_for('home') }}" class="home-text">Home</a></li>
-        <br>
-        <li><a href="{{ url_for('about') }}">About</a></li>
-    </ul>
-</nav>
+    <header>
+        <ul>
+            <li>
+                <a href="{{ url_for('home') }}" class="home-text">Home</a>
+            </li>
+            <br>
+            {% if 'username' in session %}
+            <li>
+                <a href="{{ url_for('logout') }}">Деавторизуватися</a>
+            </li>
+            {% else %}
+            <li>
+                <a href="{{ url_for('login') }}">Авторизація</a>
+            </li>
+            <li>
+                <a href="{{ url_for('register') }}">Реєстрація</a>
+            </li>
+            {% endif %}
+            <li>
+                <a href="{{ url_for('about') }}">About</a>
+            </li>
+        </ul>
+    </header>
 <div>
     {% block content %}{% endblock %}
 </div>

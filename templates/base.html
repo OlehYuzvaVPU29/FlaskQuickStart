@@ -54,7 +54,7 @@
         <div class="col-md-3 text-end">
             {% if 'username' in session %}
                 <button type="button" class="btn btn-outline-primary me-2" onclick="window.location.href='{{ url_for('logout') }}'">Деавторизуватися</button>
-                            <button type="button" class="btn btn-primary" onclick="window.location.href='{{ url_for('user', username=session.username) }}'">Твій Профіль</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='{{ url_for('user', username=session.username) }}'">Твій Профіль</button>
 
             {% else %}
                 <button type="button" class="btn btn-outline-primary me-2" onclick="window.location.href='login'">Авторизація</button>

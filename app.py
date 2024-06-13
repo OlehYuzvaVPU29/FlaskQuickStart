@@ -45,6 +45,8 @@ def user(username):
             'user.html',
             username=username
         )
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route("/posts")

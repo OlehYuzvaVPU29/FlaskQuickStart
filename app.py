@@ -1,13 +1,40 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+from sqlalchemy.testing.schema import mapped_column
+
+from forms.login_form import LoginForm
+from forms.registration_form import RegistrationForm
+
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase, Mapped
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+db = SQLAlchemy(model_class=Base)
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users_database.db"
+db.init_app(app)
+
+
+class User(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(unique=True)
+    password: Mapped[str]
+
+
+with app.app_context():
+    db.create_all()
 
 users = {
     'Oleh Yuzva': '123456',
     'Markiyan Patsai': '654321',
     'Legenda': 'Legenda'
 }
+
+app.secret_key = 'supersecretkey'
 
 
 @app.route("/")
@@ -67,7 +94,8 @@ def show_post(post_id):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
         username = request.form['username']
         password = request.form['password']
 
@@ -77,7 +105,7 @@ def login():
 
             return redirect(url_for('user', username=username))
 
-    return render_template('login.html')
+    return render_template('login.html', form=form)
 
 
 @app.route('/logout')
@@ -89,9 +117,30 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template('register.html')
+    form = RegistrationForm(request.form)
+    if request.method == 'POST' and form.validate():
+
+        username = request.form['username']
+        password = request.form['password']
+
+        new_user = User(
+            username=username,
+            password=password,
+        )
+        db.session.add(new_user)
+        db.session.commit()
+
+        if username not in users:
+            users[username] = password
+            session['username'] = username
+            flash(f"Вітаю {username}! Ви успішно зареєструвались!")
+            return redirect(url_for('user', username=username))
+        else:
+            flash(f"Користувач з іменем {username} вже існує. Будь ласка, виберіть інше ім'я.")
+
+    return render_template('register.html', form=form)
 
 
 @app.route('/about')

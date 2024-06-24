@@ -4,22 +4,36 @@
 
 {% block content %}
 <main class="form-login w-25 m-auto">
-    <img class="mb-4" src="{{ url_for('static', filename='assets/images/bootstrap-logo.svg') }}" alt="Bootstrap Logo" width="72" height="57">
+    <img class="mb-4"
+         src="{{ url_for('static', filename='assets/images/bootstrap-logo.svg') }}"
+         alt="Bootstrap Logo"
+         width="72"
+         height="57">
     <h1 class="h3 mb-3 fw-normal">Please log in</h1>
     <link href="{{ url_for('static', filename='assets/styles/style.css') }}" rel="stylesheet">
     <form method="POST" action="{{ url_for('login') }}">
 
         <div class="form-floating">
-            <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Username">
             <label for="username">Username</label>
+            {% for error in form.username.errors %}
+              <div class="alert alert-danger">
+                  {{ error }}
+              </div>
+            {% endfor %}
         </div>
 
         <div class="form-floating">
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password">
             <label for="password">Password</label>
+            {% for error in form.password.errors%}
+              <div class="alert alert-danger">
+                  {{ error }}
+              </div>
+            {% endfor %}
         </div>
         <br>
-        <button class="btn btn-primary w-25 py-2" type="submit">Log in</button>
+        <button class="btn btn-primary w-25 py-2" type="submit">Confirm</button>
         <p class="mt-5 mb-3 text-body-secondary">&copy; 2023–2027</p>
     </form>
 </main>
